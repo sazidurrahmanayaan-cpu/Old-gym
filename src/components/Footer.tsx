@@ -12,7 +12,11 @@ export const Footer: React.FC = () => {
   };
 
   const handleAdminClick = () => {
-    setCurrentView('admin');
+    if (isAdmin) {
+      setCurrentView('admin');
+    } else {
+      setShowLoginModal(true);
+    }
   };
 
   return (

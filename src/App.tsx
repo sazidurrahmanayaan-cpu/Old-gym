@@ -21,9 +21,16 @@ import { AdminDashboard } from './components/admin/AdminDashboard';
 import { AdminLoginModal } from './components/admin/AdminLoginModal';
 
 function AppContent() {
-  const { currentView } = useGym();
+  const { currentView, isAdmin, setShowLoginModal } = useGym();
   const [isTrialModalOpen, setIsTrialModalOpen] = useState(false);
   const [selectedPlanForTrial, setSelectedPlanForTrial] = useState<string | undefined>(undefined);
+
+  // If someone enters admin view without authentication, trigger the password lock modal immediately
+  React.useEffect(() => {
+    if (currentView === 'admin' && !isAdmin) {
+      setShowLoginModal(true);
+    }
+  }, [currentView, isAdmin, setShowLoginModal]);
 
   const handleOpenTrialModal = (plan?: string) => {
     setSelectedPlanForTrial(plan);
@@ -35,8 +42,8 @@ function AppContent() {
     setSelectedPlanForTrial(undefined);
   };
 
-  // If Admin view is active, render Admin Dashboard directly without password prompt
-  if (currentView === 'admin') {
+  // If Admin view is active and authenticated with password
+  if (currentView === 'admin' && isAdmin) {
     return (
       <>
         <AdminDashboard />

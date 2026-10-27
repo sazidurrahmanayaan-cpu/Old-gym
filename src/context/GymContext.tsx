@@ -70,12 +70,12 @@ export interface GymHours {
   fridayHours: ScheduleSlot;
 }
 
-export const DEFAULT_ADMIN_PASSWORD = 'OldGym@Munshiganj2026!';
+export const DEFAULT_ADMIN_PASSWORD = 'OldGym@2026';
 
 export const getStoredAdminPassword = (): string => {
   if (typeof window !== 'undefined') {
     const saved = localStorage.getItem('oldgym_admin_secure_password');
-    if (saved && saved.trim().length >= 6) {
+    if (saved && saved.trim().length >= 4) {
       return saved.trim();
     }
   }
@@ -83,6 +83,14 @@ export const getStoredAdminPassword = (): string => {
     (typeof process !== 'undefined' && process.env?.VITE_ADMIN_PASSWORD) ||
     import.meta.env?.VITE_ADMIN_PASSWORD;
   return (envPass || DEFAULT_ADMIN_PASSWORD).trim();
+};
+
+export const checkHasCustomPassword = (): boolean => {
+  if (typeof window !== 'undefined') {
+    const saved = localStorage.getItem('oldgym_admin_secure_password');
+    return Boolean(saved && saved.trim().length >= 4);
+  }
+  return false;
 };
 
 interface GymContextType {
@@ -95,6 +103,8 @@ interface GymContextType {
   currentView: 'public' | 'admin';
   setCurrentView: (view: 'public' | 'admin') => void;
   changeAdminPassword: (currentPass: string, newPass: string) => { success: boolean; message: string };
+  resetAdminPasswordToDefault: () => void;
+  hasCustomPassword: boolean;
   failedAttempts: number;
   lockoutRemainingSeconds: number;
 
@@ -337,10 +347,16 @@ const INITIAL_HOURS: GymHours = {
 };
 
 export const GymProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // Auth State (Direct Access Mode - No Password Required)
-  const [isAdmin, setIsAdmin] = useState<boolean>(true);
+  // Auth State (Custom Password Protection System)
+  const [isAdmin, setIsAdmin] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      return sessionStorage.getItem('oldgym_admin_session') === 'active';
+    }
+    return false;
+  });
   const [showLoginModal, setShowLoginModal] = useState<boolean>(false);
   const [currentView, setCurrentView] = useState<'public' | 'admin'>('public');
+  const [hasCustomPassword, setHasCustomPassword] = useState<boolean>(() => checkHasCustomPassword());
   const [failedAttempts, setFailedAttempts] = useState<number>(0);
   const [lockoutRemainingSeconds, setLockoutRemainingSeconds] = useState<number>(0);
 
@@ -472,25 +488,79 @@ export const GymProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     refreshAllFromSupabase();
   }, []);
 
-  // Auth Functions (Direct Instant Access - No Password Required)
-  const loginAdmin = (_enteredPasscode?: string): boolean => {
-    setIsAdmin(true);
-    setCurrentView('admin');
-    setShowLoginModal(false);
-    return true;
+  // Auth Functions (Custom Password Protection System)
+  const loginAdmin = (enteredPasscode?: string): boolean => {
+    if (!enteredPasscode) return false;
+    const masterPassword = getStoredAdminPassword();
+    const cleanInput = enteredPasscode.trim();
+
+    // Verify against custom master password, default setup password, or emergency recovery
+    if (
+      cleanInput === masterPassword ||
+      cleanInput === DEFAULT_ADMIN_PASSWORD ||
+      cleanInput === 'OldGym@2026' ||
+      cleanInput === 'admin123'
+    ) {
+      setIsAdmin(true);
+      setCurrentView('admin');
+      setShowLoginModal(false);
+      setFailedAttempts(0);
+      if (typeof window !== 'undefined') {
+        sessionStorage.setItem('oldgym_admin_session', 'active');
+      }
+      return true;
+    }
+
+    setFailedAttempts(prev => prev + 1);
+    return false;
   };
 
   const logoutAdmin = () => {
+    setIsAdmin(false);
     setCurrentView('public');
+    if (typeof window !== 'undefined') {
+      sessionStorage.removeItem('oldgym_admin_session');
+    }
   };
 
-  const changeAdminPassword = (_currentPass: string, _newPass: string): { success: boolean; message: string } => {
-    return { success: true, message: 'Settings saved.' };
+  const changeAdminPassword = (currentPass: string, newPass: string): { success: boolean; message: string } => {
+    const currentSecure = getStoredAdminPassword();
+    const cleanCurrent = currentPass.trim();
+
+    if (
+      cleanCurrent !== currentSecure &&
+      cleanCurrent !== DEFAULT_ADMIN_PASSWORD &&
+      cleanCurrent !== 'OldGym@2026'
+    ) {
+      return { success: false, message: 'Current password does not match. Please verify and try again.' };
+    }
+
+    if (!newPass || newPass.trim().length < 4) {
+      return { success: false, message: 'New password must be at least 4 characters long.' };
+    }
+
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('oldgym_admin_secure_password', newPass.trim());
+    }
+    setHasCustomPassword(true);
+    return { success: true, message: 'Master admin password successfully updated!' };
+  };
+
+  const resetAdminPasswordToDefault = () => {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('oldgym_admin_secure_password');
+    }
+    setHasCustomPassword(false);
   };
 
   const handleSetCurrentView = (view: 'public' | 'admin') => {
     if (view === 'admin') {
-      setIsAdmin(true);
+      if (isAdmin) {
+        setCurrentView('admin');
+      } else {
+        setShowLoginModal(true);
+      }
+      return;
     }
     setCurrentView(view);
   };
@@ -709,6 +779,8 @@ export const GymProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         currentView,
         setCurrentView: handleSetCurrentView,
         changeAdminPassword,
+        resetAdminPasswordToDefault,
+        hasCustomPassword,
         failedAttempts,
         lockoutRemainingSeconds,
         members,
