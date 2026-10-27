@@ -73,7 +73,7 @@ export const MasterContentManager: React.FC = () => {
   const [coachStatus, setCoachStatus] = useState<'Active' | 'Inactive'>('Active');
   const [coachExp, setCoachExp] = useState('8+ Years Coaching Experience');
   const [coachAchievements, setCoachAchievements] = useState('Senior Physique Coach & Gold Medalist');
-  const [coachImage, setCoachImage] = useState('/src/assets/images/trainer_bodybuilder_pro_1790467287018.jpg');
+  const [coachImage, setCoachImage] = useState('/assets/images/trainer_bodybuilder_pro_1790467287018.jpg');
 
   // Equipment Modal / Form states
   const [isEquipmentModalOpen, setIsEquipmentModalOpen] = useState(false);
@@ -116,7 +116,7 @@ export const MasterContentManager: React.FC = () => {
     setCoachStatus('Active');
     setCoachExp('7+ Years Experience');
     setCoachAchievements('Divisional Bodybuilding Competitor & Coach');
-    setCoachImage('/src/assets/images/trainer_bodybuilder_pro_1790467287018.jpg');
+    setCoachImage('/assets/images/trainer_bodybuilder_pro_1790467287018.jpg');
     setIsTrainerModalOpen(true);
   };
 

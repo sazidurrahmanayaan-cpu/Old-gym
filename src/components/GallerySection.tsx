@@ -62,6 +62,12 @@ export const GallerySection: React.FC = () => {
                 alt={item.title}
                 referrerPolicy="no-referrer"
                 className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+                onError={(e) => {
+                  const target = e.currentTarget;
+                  if (!target.src.includes('hero_gym_dark')) {
+                    target.src = '/assets/images/hero_gym_dark_1790467261162.jpg';
+                  }
+                }}
               />
               
               {/* Dark Gradient Overlay */}
@@ -120,6 +126,12 @@ export const GallerySection: React.FC = () => {
                 alt={lightboxImage.title}
                 referrerPolicy="no-referrer"
                 className="w-full h-full object-contain max-h-[75vh]"
+                onError={(e) => {
+                  const target = e.currentTarget;
+                  if (!target.src.includes('hero_gym_dark')) {
+                    target.src = '/assets/images/hero_gym_dark_1790467261162.jpg';
+                  }
+                }}
               />
             </div>
           </div>

@@ -31,8 +31,8 @@ const CASES: TransformationCase[] = [
     muscleChange: '+4.5 kg Lean Muscle',
     bodyFatChange: '28% → 13% Body Fat',
     quote: '"I joined Old Gym sluggish and overweight. Coach Farhan completely transformed my diet with local food and pushed me on compound lifts. Best decision of my life!"',
-    beforeImg: '/src/assets/images/trans_before_gym_1790469833653.jpg',
-    afterImg: '/src/assets/images/trans_after_gym_1790469846870.jpg'
+    beforeImg: '/assets/images/trans_before_gym_1790469833653.jpg',
+    afterImg: '/assets/images/trans_after_gym_1790469846870.jpg'
   },
   {
     id: 'case-2',
@@ -44,8 +44,8 @@ const CASES: TransformationCase[] = [
     muscleChange: '+7 kg Dense Muscle',
     bodyFatChange: 'Bench +45kg / Squat +60kg',
     quote: '"Old Gym has the real calibrated heavy iron that other gyms in Munshiganj lack. The brotherhood and pro coach form checks helped me pack on pure muscle."',
-    beforeImg: '/src/assets/images/trans_before_gym_1790469833653.jpg',
-    afterImg: '/src/assets/images/trans_after_gym_1790469846870.jpg'
+    beforeImg: '/assets/images/trans_before_gym_1790469833653.jpg',
+    afterImg: '/assets/images/trans_after_gym_1790469846870.jpg'
   },
   {
     id: 'case-3',
@@ -57,8 +57,8 @@ const CASES: TransformationCase[] = [
     muscleChange: '+3 kg Lean Tissue',
     bodyFatChange: 'Waist -5.5 Inches',
     quote: '"Spotless hygiene, friendly gym members, and trainers who actually stand next to you during your sets. You can see real physical changes every 2 weeks."',
-    beforeImg: '/src/assets/images/trans_before_gym_1790469833653.jpg',
-    afterImg: '/src/assets/images/trans_after_gym_1790469846870.jpg'
+    beforeImg: '/assets/images/trans_before_gym_1790469833653.jpg',
+    afterImg: '/assets/images/trans_after_gym_1790469846870.jpg'
   }
 ];
 
@@ -160,6 +160,12 @@ export const TransformationSection: React.FC<TransformationSectionProps> = ({ on
                   alt={`${activeCase.name} After Transformation`}
                   referrerPolicy="no-referrer"
                   className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none"
+                  onError={(e) => {
+                    const target = e.currentTarget;
+                    if (!target.src.includes('trans_after_gym')) {
+                      target.src = '/assets/images/trans_after_gym_1790469846870.jpg';
+                    }
+                  }}
                 />
                 
                 {/* AFTER Badge */}
@@ -178,6 +184,12 @@ export const TransformationSection: React.FC<TransformationSectionProps> = ({ on
                     referrerPolicy="no-referrer"
                     className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none filter contrast-90"
                     style={{ width: containerRef.current ? `${containerRef.current.clientWidth}px` : '100%' }}
+                    onError={(e) => {
+                      const target = e.currentTarget;
+                      if (!target.src.includes('trans_before_gym')) {
+                        target.src = '/assets/images/trans_before_gym_1790469833653.jpg';
+                      }
+                    }}
                   />
                   {/* BEFORE Badge */}
                   <div className="absolute top-4 left-4 z-10 px-3 py-1 rounded-md bg-black/85 backdrop-blur-md border border-neutral-700 text-neutral-300 text-xs font-mono font-bold tracking-wider">

@@ -44,7 +44,7 @@ export const GYM_INFO = {
   name: 'Old Gym Health & Fitness Center',
   bengaliName: 'ওল্ড জিম হেলথ & ফিটনেস সেন্টার',
   tagline: 'Best Gym in Munshiganj Area - Clean & Professional',
-  logoImage: '/src/assets/images/old_gym_logo_badge_1790470745512.jpg',
+  logoImage: '/assets/images/old_gym_logo_badge_1790470745512.jpg',
   rating: 4.6,
   reviewCount: 14,
   phone: '01919-048227',
@@ -246,7 +246,7 @@ export const TRAINERS: Trainer[] = [
     experience: '9+ Years Professional Experience',
     specialties: ['Competitive Bodybuilding', 'Heavy Hypertrophy', 'Advanced Nutrition'],
     achievements: 'Divisional Bodybuilding Championship Medalist & Munshiganj Senior Coach',
-    image: '/src/assets/images/trainer_bodybuilder_pro_1790467287018.jpg'
+    image: '/assets/images/trainer_bodybuilder_pro_1790467287018.jpg'
   },
   {
     id: 'trainer-2',
@@ -255,7 +255,7 @@ export const TRAINERS: Trainer[] = [
     experience: '7+ Years Coaching Experience',
     specialties: ['Rapid Fat Loss', 'Functional Strength', 'Biomechanics & Form'],
     achievements: 'Certified Strength & Conditioning Specialist with 200+ successful body transformations',
-    image: '/src/assets/images/hero_gym_dark_1790467261162.jpg'
+    image: '/assets/images/hero_gym_dark_1790467261162.jpg'
   },
   {
     id: 'trainer-3',
@@ -264,7 +264,7 @@ export const TRAINERS: Trainer[] = [
     experience: '8+ Years Lifting & Mentoring',
     specialties: ['Powerlifting Fundamentals', 'Posture Correction', 'Athletic Conditioning'],
     achievements: 'District Powerlifting Champion & Expert in Injury-Free Heavy Compound Lifting',
-    image: '/src/assets/images/gym_interior_training_1790467298261.jpg'
+    image: '/assets/images/gym_interior_training_1790467298261.jpg'
   }
 ];
 
@@ -273,36 +273,36 @@ export const GALLERY_ITEMS = [
     id: 'gal-1',
     title: 'Heavy Dumbbell & Free Weight Rack',
     category: 'Free Weights',
-    image: '/src/assets/images/about_gym_equipment_1790467275863.jpg'
+    image: '/assets/images/about_gym_equipment_1790467275863.jpg'
   },
   {
     id: 'gal-2',
     title: 'Main Training Floor & Power Racks',
     category: 'Strength Zone',
-    image: '/src/assets/images/hero_gym_dark_1790467261162.jpg'
+    image: '/assets/images/hero_gym_dark_1790467261162.jpg'
   },
   {
     id: 'gal-3',
     title: 'High-End Resistance & Cable Machines',
     category: 'New Equipment',
-    image: '/src/assets/images/gym_interior_training_1790467298261.jpg'
+    image: '/assets/images/gym_interior_training_1790467298261.jpg'
   },
   {
     id: 'gal-4',
     title: 'Professional Bodybuilder Coach Corner',
     category: 'Coaching',
-    image: '/src/assets/images/trainer_bodybuilder_pro_1790467287018.jpg'
+    image: '/assets/images/trainer_bodybuilder_pro_1790467287018.jpg'
   },
   {
     id: 'gal-5',
     title: 'Deadlift Platform & Calibrated Olympic Bars',
     category: 'Strength Zone',
-    image: '/src/assets/images/about_gym_equipment_1790467275863.jpg'
+    image: '/assets/images/about_gym_equipment_1790467275863.jpg'
   },
   {
     id: 'gal-6',
     title: 'Spacious Cardio & Conditioning Floor',
     category: 'Clean Space',
-    image: '/src/assets/images/hero_gym_dark_1790467261162.jpg'
+    image: '/assets/images/hero_gym_dark_1790467261162.jpg'
   }
 ];

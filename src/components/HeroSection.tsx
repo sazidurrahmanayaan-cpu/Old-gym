@@ -30,7 +30,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenTrialModal }) =>
           loop
           muted
           playsInline
-          poster="/src/assets/images/hero_gym_dark_1790467261162.jpg"
+          poster="/assets/images/hero_gym_dark_1790467261162.jpg"
           preload="metadata"
           className="w-full h-full object-cover object-center filter brightness-90 contrast-110"
         >
@@ -40,9 +40,13 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenTrialModal }) =>
           />
           {/* Fallback image */}
           <img
-            src="/src/assets/images/hero_gym_dark_1790467261162.jpg"
+            src="/assets/images/hero_gym_dark_1790467261162.jpg"
             alt="Old Gym Munshiganj"
             className="w-full h-full object-cover"
+            onError={(e) => {
+              const target = e.currentTarget;
+              target.style.display = 'none';
+            }}
           />
         </video>
 

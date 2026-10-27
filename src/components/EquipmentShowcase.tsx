@@ -22,7 +22,7 @@ const EQUIPMENT_LIST: EquipmentItem[] = [
     id: 'eq-1',
     name: 'Commercial Olympic Power Cage & Squat Rack',
     category: 'Power Cages',
-    image: '/src/assets/images/equipment_power_cage_1790469860997.jpg',
+    image: '/assets/images/equipment_power_cage_1790469860997.jpg',
     targetMuscles: ['Quadriceps', 'Glutes', 'Hamstrings', 'Traps', 'Spinal Erectors'],
     specs: {
       capacity: 'Tested to 600 kg (1,320 lbs)',
@@ -36,7 +36,7 @@ const EQUIPMENT_LIST: EquipmentItem[] = [
     id: 'eq-2',
     name: 'Dual Cable Functional Crossover Station',
     category: 'Cable & Isolation',
-    image: '/src/assets/images/equipment_cable_crossover_1790469872792.jpg',
+    image: '/assets/images/equipment_cable_crossover_1790469872792.jpg',
     targetMuscles: ['Pectorals', 'Deltoids', 'Triceps', 'Biceps', 'Rotator Cuff'],
     specs: {
       capacity: 'Dual 100 kg (220 lbs) Weight Stacks',
@@ -50,7 +50,7 @@ const EQUIPMENT_LIST: EquipmentItem[] = [
     id: 'eq-3',
     name: 'Calibrated Heavy Dumbbell Rack (2.5kg to 45kg+)',
     category: 'Free Weights',
-    image: '/src/assets/images/about_gym_equipment_1790467275863.jpg',
+    image: '/assets/images/about_gym_equipment_1790467275863.jpg',
     targetMuscles: ['Full Body', 'Chest', 'Shoulders', 'Arms', 'Back'],
     specs: {
       capacity: 'Complete pairs up to 45kg (100 lbs+)',
@@ -64,7 +64,7 @@ const EQUIPMENT_LIST: EquipmentItem[] = [
     id: 'eq-4',
     name: 'Competition Deadlift Platform & Olympic Barbells',
     category: 'Power Cages',
-    image: '/src/assets/images/hero_gym_dark_1790467261162.jpg',
+    image: '/assets/images/hero_gym_dark_1790467261162.jpg',
     targetMuscles: ['Posterior Chain', 'Hamstrings', 'Lats', 'Forearms', 'Core'],
     specs: {
       capacity: 'Tested to 450 kg (990 lbs)',
@@ -78,7 +78,7 @@ const EQUIPMENT_LIST: EquipmentItem[] = [
     id: 'eq-5',
     name: 'Commercial High-Incline HIIT Cardio Deck',
     category: 'Cardio',
-    image: '/src/assets/images/gym_interior_training_1790467298261.jpg',
+    image: '/assets/images/gym_interior_training_1790467298261.jpg',
     targetMuscles: ['Cardiovascular System', 'Calves', 'Core', 'Glutes'],
     specs: {
       capacity: 'Up to 22 km/h & 18% Incline Grade',
@@ -92,7 +92,7 @@ const EQUIPMENT_LIST: EquipmentItem[] = [
     id: 'eq-6',
     name: 'Heavy Plate-Loaded Leg Press & Hack Squat',
     category: 'Cable & Isolation',
-    image: '/src/assets/images/equipment_power_cage_1790469860997.jpg',
+    image: '/assets/images/equipment_power_cage_1790469860997.jpg',
     targetMuscles: ['Quadriceps Vastus', 'Adductors', 'Gluteus Maximus'],
     specs: {
       capacity: 'Holds up to 500 kg in Olympic 20kg plates',
@@ -177,6 +177,12 @@ export const EquipmentShowcase: React.FC = () => {
                     alt={item.name}
                     referrerPolicy="no-referrer"
                     className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500 filter brightness-95"
+                    onError={(e) => {
+                      const target = e.currentTarget;
+                      if (!target.src.includes('equipment_power_cage')) {
+                        target.src = '/assets/images/equipment_power_cage_1790469860997.jpg';
+                      }
+                    }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent" />
                   
@@ -272,6 +278,12 @@ export const EquipmentShowcase: React.FC = () => {
                   alt={selectedItem.name}
                   referrerPolicy="no-referrer"
                   className="w-full h-full object-cover object-center"
+                  onError={(e) => {
+                    const target = e.currentTarget;
+                    if (!target.src.includes('equipment_power_cage')) {
+                      target.src = '/assets/images/equipment_power_cage_1790469860997.jpg';
+                    }
+                  }}
                 />
               </div>
 

@@ -310,10 +310,16 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ onOpenTrialModal }) 
             {/* Left Image Showcase */}
             <div className="lg:col-span-6 relative h-72 sm:h-96 lg:h-full min-h-[340px] overflow-hidden group">
               <img
-                src="/src/assets/images/about_gym_equipment_1790467275863.jpg"
+                src="/assets/images/about_gym_equipment_1790467275863.jpg"
                 alt="New Gym Equipment at Old Gym Munshiganj"
                 referrerPolicy="no-referrer"
                 className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700"
+                onError={(e) => {
+                  const target = e.currentTarget;
+                  if (!target.src.includes('hero_gym_dark')) {
+                    target.src = '/assets/images/hero_gym_dark_1790467261162.jpg';
+                  }
+                }}
               />
               <div className="absolute inset-0 bg-gradient-to-t lg:bg-gradient-to-r from-black/85 via-black/40 to-transparent" />
               

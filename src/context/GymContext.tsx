@@ -355,7 +355,44 @@ export const GymProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return false;
   });
   const [showLoginModal, setShowLoginModal] = useState<boolean>(false);
-  const [currentView, setCurrentView] = useState<'public' | 'admin'>('public');
+  const [currentView, setCurrentView] = useState<'public' | 'admin'>(() => {
+    if (typeof window !== 'undefined') {
+      const path = window.location.pathname.toLowerCase();
+      const hash = window.location.hash.toLowerCase();
+      if (path === '/admin' || path === '/admin/' || hash === '#admin') {
+        return 'admin';
+      }
+    }
+    return 'public';
+  });
+
+  // Keep browser URL in sync with current view for deep-linking & refreshing on Netlify
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      if (currentView === 'admin') {
+        if (window.location.pathname !== '/admin') {
+          window.history.replaceState(null, '', '/admin');
+        }
+      } else {
+        if (window.location.pathname === '/admin') {
+          window.history.replaceState(null, '', '/');
+        }
+      }
+
+      const handlePopState = () => {
+        const path = window.location.pathname.toLowerCase();
+        const hash = window.location.hash.toLowerCase();
+        if (path === '/admin' || path === '/admin/' || hash === '#admin') {
+          setCurrentView('admin');
+        } else {
+          setCurrentView('public');
+        }
+      };
+
+      window.addEventListener('popstate', handlePopState);
+      return () => window.removeEventListener('popstate', handlePopState);
+    }
+  }, [currentView]);
   const [hasCustomPassword, setHasCustomPassword] = useState<boolean>(() => checkHasCustomPassword());
   const [failedAttempts, setFailedAttempts] = useState<number>(0);
   const [lockoutRemainingSeconds, setLockoutRemainingSeconds] = useState<number>(0);
