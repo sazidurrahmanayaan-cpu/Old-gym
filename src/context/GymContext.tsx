@@ -70,7 +70,8 @@ export interface GymHours {
   fridayHours: ScheduleSlot;
 }
 
-export const DEFAULT_ADMIN_PASSWORD = 'OldGym@2026';
+const ENV_ADMIN_PASSWORD = (import.meta.env?.VITE_ADMIN_PASSWORD as string | undefined)?.trim();
+const FALLBACK_DEFAULT_ADMIN_PASSWORD = 'OldGym@2026';
 
 export const getStoredAdminPassword = (): string => {
   if (typeof window !== 'undefined') {
@@ -79,10 +80,7 @@ export const getStoredAdminPassword = (): string => {
       return saved.trim();
     }
   }
-  const envPass = 
-    (typeof process !== 'undefined' && process.env?.VITE_ADMIN_PASSWORD) ||
-    import.meta.env?.VITE_ADMIN_PASSWORD;
-  return (envPass || DEFAULT_ADMIN_PASSWORD).trim();
+  return (ENV_ADMIN_PASSWORD || FALLBACK_DEFAULT_ADMIN_PASSWORD).trim();
 };
 
 export const checkHasCustomPassword = (): boolean => {
@@ -350,7 +348,18 @@ export const GymProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   // Auth State (Custom Password Protection System)
   const [isAdmin, setIsAdmin] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
-      return sessionStorage.getItem('oldgym_admin_session') === 'active';
+      const active = sessionStorage.getItem('oldgym_admin_session') === 'active';
+      if (!active) return false;
+      const lastActivityStr = sessionStorage.getItem('oldgym_admin_last_activity');
+      if (lastActivityStr) {
+        const lastActivity = parseInt(lastActivityStr, 10);
+        if (!isNaN(lastActivity) && Date.now() - lastActivity > 15 * 60 * 1000) {
+          sessionStorage.removeItem('oldgym_admin_session');
+          sessionStorage.removeItem('oldgym_admin_last_activity');
+          return false;
+        }
+      }
+      return true;
     }
     return false;
   });
@@ -525,25 +534,66 @@ export const GymProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     refreshAllFromSupabase();
   }, []);
 
+  // 15-Minute Inactivity Auto-Lock Security
+  useEffect(() => {
+    if (!isAdmin || typeof window === 'undefined') return;
+
+    const INACTIVITY_LIMIT_MS = 15 * 60 * 1000; // 15 minutes = 900,000ms
+    let lastActivity = Date.now();
+    sessionStorage.setItem('oldgym_admin_last_activity', lastActivity.toString());
+
+    const updateActivity = () => {
+      lastActivity = Date.now();
+      sessionStorage.setItem('oldgym_admin_last_activity', lastActivity.toString());
+    };
+
+    const activityEvents = ['mousedown', 'keydown', 'scroll', 'touchstart', 'click'];
+    let throttleTimeout: NodeJS.Timeout | null = null;
+    const handleActivity = () => {
+      if (!throttleTimeout) {
+        updateActivity();
+        throttleTimeout = setTimeout(() => {
+          throttleTimeout = null;
+        }, 1500);
+      }
+    };
+
+    activityEvents.forEach((ev) => window.addEventListener(ev, handleActivity, { passive: true }));
+
+    const checkInterval = setInterval(() => {
+      const elapsed = Date.now() - lastActivity;
+      if (elapsed >= INACTIVITY_LIMIT_MS) {
+        console.warn('Admin session expired after 15 minutes of inactivity.');
+        logoutAdmin();
+      }
+    }, 10000);
+
+    return () => {
+      activityEvents.forEach((ev) => window.removeEventListener(ev, handleActivity));
+      if (throttleTimeout) clearTimeout(throttleTimeout);
+      clearInterval(checkInterval);
+    };
+  }, [isAdmin]);
+
   // Auth Functions (Custom Password Protection System)
   const loginAdmin = (enteredPasscode?: string): boolean => {
     if (!enteredPasscode) return false;
     const masterPassword = getStoredAdminPassword();
     const cleanInput = enteredPasscode.trim();
 
-    // Verify against custom master password, default setup password, or emergency recovery
-    if (
+    // Verify against custom master password, environment-configured password, or fallback
+    const isMatch = 
       cleanInput === masterPassword ||
-      cleanInput === DEFAULT_ADMIN_PASSWORD ||
-      cleanInput === 'OldGym@2026' ||
-      cleanInput === 'admin123'
-    ) {
+      (Boolean(ENV_ADMIN_PASSWORD) && cleanInput === ENV_ADMIN_PASSWORD) ||
+      cleanInput === FALLBACK_DEFAULT_ADMIN_PASSWORD;
+
+    if (isMatch) {
       setIsAdmin(true);
       setCurrentView('admin');
-      setShowLoginModal(false);
       setFailedAttempts(0);
       if (typeof window !== 'undefined') {
         sessionStorage.setItem('oldgym_admin_session', 'active');
+        sessionStorage.setItem('oldgym_admin_last_activity', Date.now().toString());
       }
       return true;
     }
@@ -555,8 +605,13 @@ export const GymProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const logoutAdmin = () => {
     setIsAdmin(false);
     setCurrentView('public');
+    setShowLoginModal(false);
     if (typeof window !== 'undefined') {
       sessionStorage.removeItem('oldgym_admin_session');
+      sessionStorage.removeItem('oldgym_admin_last_activity');
+      if (window.location.pathname === '/admin') {
+        window.history.replaceState(null, '', '/');
+      }
     }
   };
 
@@ -564,11 +619,12 @@ export const GymProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const currentSecure = getStoredAdminPassword();
     const cleanCurrent = currentPass.trim();
 
-    if (
-      cleanCurrent !== currentSecure &&
-      cleanCurrent !== DEFAULT_ADMIN_PASSWORD &&
-      cleanCurrent !== 'OldGym@2026'
-    ) {
+    const isCurrentValid = 
+      cleanCurrent === currentSecure ||
+      (Boolean(ENV_ADMIN_PASSWORD) && cleanCurrent === ENV_ADMIN_PASSWORD) ||
+      cleanCurrent === FALLBACK_DEFAULT_ADMIN_PASSWORD;
+
+    if (!isCurrentValid) {
       return { success: false, message: 'Current password does not match. Please verify and try again.' };
     }
 

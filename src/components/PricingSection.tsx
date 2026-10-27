@@ -1,8 +1,8 @@
 import React from 'react';
-import { PricingPlan, GYM_INFO } from '../data/gymData';
+import { PricingPlan, GYM_INFO, getWhatsAppInquiryUrl } from '../data/gymData';
 import { useGym } from '../context/GymContext';
 import { useLanguage } from '../context/LanguageContext';
-import { Check, Zap, Sparkles, Shield, ArrowRight } from 'lucide-react';
+import { Check, Zap, Sparkles, Shield, ArrowRight, MessageCircle } from 'lucide-react';
 
 interface PricingSectionProps {
   onSelectPlan: (planName: string) => void;
@@ -126,12 +126,23 @@ export const PricingSection: React.FC<PricingSectionProps> = ({ onSelectPlan }) 
             <h4 className="text-sm font-semibold text-white">Have questions about student or group discounts?</h4>
             <p className="text-xs text-neutral-400">Call our desk directly or message us on WhatsApp for rapid enrollment.</p>
           </div>
-          <a
-            href={GYM_INFO.callUrl}
-            className="px-5 py-2.5 rounded-lg text-xs font-bold uppercase text-white bg-neutral-800 hover:bg-neutral-700 transition-colors whitespace-nowrap"
-          >
-            Call {GYM_INFO.phone}
-          </a>
+          <div className="flex items-center gap-2 shrink-0">
+            <a
+              href={getWhatsAppInquiryUrl('Hello Old Gym Munshiganj! I have questions regarding membership fees, student discounts, and group packages.')}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-4 py-2.5 rounded-xl text-xs font-bold uppercase text-white bg-emerald-600 hover:bg-emerald-500 transition-colors flex items-center gap-1.5 whitespace-nowrap shadow-md shadow-emerald-950/40"
+            >
+              <MessageCircle className="w-3.5 h-3.5 fill-current" />
+              <span>WhatsApp</span>
+            </a>
+            <a
+              href={GYM_INFO.callUrl}
+              className="px-4 py-2.5 rounded-xl text-xs font-bold uppercase text-neutral-300 hover:text-white bg-neutral-800 hover:bg-neutral-700 transition-colors whitespace-nowrap border border-neutral-700"
+            >
+              Call {GYM_INFO.phone}
+            </a>
+          </div>
         </div>
 
       </div>

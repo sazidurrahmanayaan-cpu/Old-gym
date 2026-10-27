@@ -150,7 +150,7 @@ export const PlanPreview: React.FC<PlanPreviewProps> = ({ onUnlockPlan }) => {
   const whatsAppDietUrl = useMemo(() => {
     const goalTitle = goal === 'fatloss' ? 'Fat Loss & Shred' : goal === 'musclegain' ? 'Heavy Muscle Gain' : 'Weight Maintenance';
     const message = `Hello Old Gym Munshiganj! I used your Interactive Bengali Nutrition Generator.\n\nMy Stats:\n- Gender: ${gender === 'male' ? 'Male' : 'Female'}, Age: ${age}, Weight: ${weightKg}kg, Height: ${effectiveHeightCm}cm\n- Goal: ${goalTitle}\n- Target Calories: ${calculationResults.targetCalories} kcal/day\n- Target Protein: ${calculationResults.targetProtein}g/day\n- Target Water: ${calculationResults.waterLiters} Liters/day\n\nPlease send me my personalized Bengali diet chart & coaching details!`;
-    return `https://wa.me/8801919048227?text=${encodeURIComponent(message)}`;
+    return `https://wa.me/8801825282322?text=${encodeURIComponent(message)}`;
   }, [gender, age, weightKg, effectiveHeightCm, goal, calculationResults]);
 
   // Workout Split Data

@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Dumbbell, Sparkles, Trophy, ChevronRight, Volume2, VolumeX } from 'lucide-react';
+import { Dumbbell, Sparkles, Trophy, ChevronRight, Volume2, VolumeX, MessageCircle } from 'lucide-react';
 import { GYM_INFO } from '../data/gymData';
 import { useLanguage } from '../context/LanguageContext';
 import gymLogoImg from '../assets/images/old_gym_logo_badge_1790470745512.jpg';
@@ -109,8 +109,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenTrialModal }) =>
               <span className="text-[#D4AF37] font-semibold">{t('hero.tagline', GYM_INFO.tagline)}</span>
             </div>
 
-            {/* Primary Action Button */}
-            <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+            {/* Primary Action Buttons */}
+            <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
               <button
                 onClick={onOpenTrialModal}
                 className="group relative inline-flex items-center justify-center gap-3 px-8 py-4 rounded-xl text-sm font-extrabold uppercase tracking-wider text-black bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-600 hover:from-yellow-400 hover:to-amber-500 transition-all duration-300 shadow-[0_0_25px_rgba(212,175,55,0.4)] hover:shadow-[0_0_35px_rgba(255,215,0,0.6)] hover:scale-105 active:scale-95 cursor-pointer"
@@ -118,6 +118,16 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenTrialModal }) =>
                 <span>{t('hero.startTrial', 'Start Your Free Trial')}</span>
                 <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
               </button>
+
+              <a
+                href={GYM_INFO.whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2.5 px-6 py-4 rounded-xl text-xs font-bold uppercase tracking-wider text-emerald-300 hover:text-white bg-emerald-950/60 hover:bg-emerald-900/80 border border-emerald-600/60 hover:border-emerald-500 transition-all duration-200 active:scale-95 shadow-lg shadow-emerald-950/40"
+              >
+                <MessageCircle className="w-4 h-4 text-emerald-400 fill-current" />
+                <span>{language === 'bn' ? 'হোয়াটসঅ্যাপ মেসেজ' : 'WhatsApp Inquiry'}</span>
+              </a>
             </div>
 
             {/* Quick Proof metrics row */}

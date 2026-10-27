@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { GYM_INFO } from '../data/gymData';
+import { GYM_INFO, getWhatsAppInquiryUrl } from '../data/gymData';
 import { useGym } from '../context/GymContext';
-import { X, CheckCircle, Ticket, Calendar, Phone, User, ArrowRight } from 'lucide-react';
+import { X, CheckCircle, Ticket, Calendar, Phone, User, ArrowRight, MessageCircle } from 'lucide-react';
 import { GymLogo } from './GymLogo';
 
 interface TrialModalProps {
@@ -123,16 +123,25 @@ export const TrialModal: React.FC<TrialModalProps> = ({ isOpen, onClose, default
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-3">
+            <div className="flex flex-col sm:flex-row gap-2.5">
+              <a
+                href={getWhatsAppInquiryUrl(`Hello Old Gym Munshiganj! I have registered for a Free VIP 1-Day Trial Pass.\n\nMember Name: ${fullName}\nPhone: ${phone}\nVoucher Code: ${passCode}\nPreferred Slot: ${preferredDate}\nFocus Goal: ${trainingGoal}\n\nPlease confirm my slot!`)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 py-3 px-4 rounded-xl text-xs font-bold uppercase tracking-wider text-white bg-emerald-600 hover:bg-emerald-500 text-center shadow-md flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+              >
+                <MessageCircle className="w-4 h-4 fill-current" />
+                <span>Confirm on WhatsApp</span>
+              </a>
               <a
                 href={GYM_INFO.callUrl}
-                className="flex-1 py-3 rounded-xl text-xs font-bold uppercase tracking-wider text-black bg-gold-gradient text-center shadow-md cursor-pointer"
+                className="py-3 px-4 rounded-xl text-xs font-bold uppercase tracking-wider text-black bg-gold-gradient text-center shadow-md cursor-pointer flex items-center justify-center gap-1.5"
               >
-                Call Front Desk ({GYM_INFO.phone})
+                <span>Call Desk</span>
               </a>
               <button
                 onClick={handleReset}
-                className="py-3 px-5 rounded-xl text-xs font-semibold text-neutral-300 bg-neutral-900 border border-neutral-800 hover:bg-neutral-800 transition-colors cursor-pointer"
+                className="py-3 px-4 rounded-xl text-xs font-semibold text-neutral-300 bg-neutral-900 border border-neutral-800 hover:bg-neutral-800 transition-colors cursor-pointer"
               >
                 Done
               </button>

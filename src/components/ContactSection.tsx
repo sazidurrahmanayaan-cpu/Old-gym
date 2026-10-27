@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { GYM_INFO } from '../data/gymData';
+import { GYM_INFO, getWhatsAppInquiryUrl } from '../data/gymData';
 import { useGym } from '../context/GymContext';
 import { useLanguage } from '../context/LanguageContext';
 import { MapPin, Phone, Facebook, Clock, Send, CheckCircle2, MessageCircle } from 'lucide-react';
@@ -224,12 +224,12 @@ export const ContactSection: React.FC = () => {
                     Thank you! Our front desk trainer has received your inquiry and will call you on <strong>{GYM_INFO.phone}</strong> shortly.
                   </p>
                   <a
-                    href={GYM_INFO.whatsappUrl}
+                    href={getWhatsAppInquiryUrl(`Hello Old Gym Munshiganj! My name is ${formData.name}. I just submitted an inquiry for ${formData.interest}. My contact phone is ${formData.phone}.${formData.message ? ` Note: ${formData.message}` : ''}`)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-600 text-white text-xs font-bold uppercase mt-2 hover:bg-emerald-500 transition-colors"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 text-white text-xs font-bold uppercase mt-2 hover:bg-emerald-500 transition-colors shadow-lg shadow-emerald-950/40"
                   >
-                    <MessageCircle className="w-4 h-4" />
+                    <MessageCircle className="w-4 h-4 fill-current" />
                     Open Chat on WhatsApp Now
                   </a>
                 </div>
@@ -314,7 +314,7 @@ export const ContactSection: React.FC = () => {
 
             <div className="pt-4 border-t border-neutral-800 text-center">
               <span className="text-[11px] text-neutral-500">
-                Prefer immediate messaging? Contact us on WhatsApp: <a href={GYM_INFO.whatsappUrl} target="_blank" rel="noopener noreferrer" className="text-[#D4AF37] hover:underline font-mono">01919-048227</a>
+                Prefer immediate messaging? Contact us on WhatsApp: <a href={GYM_INFO.whatsappUrl} target="_blank" rel="noopener noreferrer" className="text-[#D4AF37] hover:underline font-mono font-bold">01825-282322</a>
               </span>
             </div>
           </div>

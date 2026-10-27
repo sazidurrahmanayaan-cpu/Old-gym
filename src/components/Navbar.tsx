@@ -15,7 +15,8 @@ import {
   Users,
   Activity,
   Star,
-  Camera
+  Camera,
+  MessageCircle
 } from 'lucide-react';
 
 interface NavbarProps {
@@ -161,6 +162,20 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenTrialModal }) => {
               <span className="text-amber-400">⭐</span>
               <span><strong className="text-white font-semibold">4.6</strong> / 5.0 (14 Google Reviews)</span>
             </div>
+
+            <span className="text-neutral-700">|</span>
+
+            {/* Direct WhatsApp Action */}
+            <a
+              href={GYM_INFO.whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border border-emerald-500/40 bg-neutral-900 hover:border-emerald-400 text-[11px] font-semibold text-emerald-300 hover:text-white transition-colors"
+              title="Chat on WhatsApp: 01825-282322"
+            >
+              <MessageCircle className="w-3 h-3 text-emerald-400 fill-current" />
+              <span>WhatsApp</span>
+            </a>
 
             <span className="text-neutral-700">|</span>
 
@@ -403,6 +418,17 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenTrialModal }) => {
                 <Zap className="w-4 h-4 fill-black" />
                 <span>{t('hero.startTrial', 'Start Free 1-Day Trial Pass')}</span>
               </button>
+
+              <a
+                href={GYM_INFO.whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setMobileMenuOpen(false)}
+                className="w-full py-3 rounded-xl text-xs font-bold uppercase tracking-wider text-white bg-emerald-600 hover:bg-emerald-500 text-center shadow-md shadow-emerald-950/40 active:scale-95 flex items-center justify-center gap-2 cursor-pointer transition-colors"
+              >
+                <MessageCircle className="w-4 h-4 fill-current" />
+                <span>{language === 'bn' ? 'হোয়াটসঅ্যাপে চ্যাট করুন' : 'Chat on WhatsApp'}</span>
+              </a>
             </div>
 
           </div>

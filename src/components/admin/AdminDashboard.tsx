@@ -124,17 +124,15 @@ export const AdminDashboard: React.FC = () => {
   };
 
   const handleResetToDefault = () => {
-    if (window.confirm('Reset admin password to default ("OldGym@2026")?')) {
-      resetAdminPasswordToDefault();
-      setStatusMessage({ type: 'success', text: 'Password reset to default: OldGym@2026' });
-      setCurrentPassInput('');
-      setNewPassInput('');
-      setConfirmPassInput('');
-      setTimeout(() => {
-        setIsPasswordModalOpen(false);
-        setStatusMessage(null);
-      }, 2000);
-    }
+    resetAdminPasswordToDefault();
+    setStatusMessage({ type: 'success', text: 'Password reset to system default.' });
+    setCurrentPassInput('');
+    setNewPassInput('');
+    setConfirmPassInput('');
+    setTimeout(() => {
+      setIsPasswordModalOpen(false);
+      setStatusMessage(null);
+    }, 2000);
   };
 
   return (
@@ -185,18 +183,15 @@ export const AdminDashboard: React.FC = () => {
               <span className="hidden sm:inline">Password Settings</span>
             </button>
 
-            {/* Lock & Exit Button */}
+            {/* Lock Admin / Logout Button */}
             <button
-              onClick={() => {
-                if (window.confirm('Lock Admin Panel and sign out? You will need your password to re-enter.')) {
-                  logoutAdmin();
-                }
-              }}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-neutral-900 hover:bg-rose-950/70 text-neutral-300 hover:text-rose-400 border border-neutral-800 hover:border-rose-700/60 transition-all cursor-pointer"
-              title="Lock Admin Panel & Sign Out"
+              type="button"
+              onClick={() => logoutAdmin()}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-rose-950/40 hover:bg-rose-900/80 text-rose-300 hover:text-white border border-rose-800/60 hover:border-rose-600 transition-all cursor-pointer active:scale-95 shadow-sm"
+              title="Lock Admin Panel & Sign Out Immediately"
             >
-              <LogOut className="w-3.5 h-3.5 text-neutral-400" />
-              <span className="hidden sm:inline">Lock & Exit</span>
+              <LogOut className="w-3.5 h-3.5 text-rose-400" />
+              <span className="hidden sm:inline font-bold">Lock Admin</span>
             </button>
 
             {/* Mobile Nav Toggle */}
@@ -212,37 +207,52 @@ export const AdminDashboard: React.FC = () => {
 
         {/* Mobile Navigation Drawer */}
         {mobileNavOpen && (
-          <div className="lg:hidden mt-3 pt-3 border-t border-neutral-800 grid grid-cols-2 gap-2 animate-in fade-in">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = activeSection === item.id;
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => {
-                    setActiveSection(item.id);
-                    setMobileNavOpen(false);
-                  }}
-                  className={`p-3 rounded-xl text-xs font-semibold text-left flex items-center justify-between border cursor-pointer ${
-                    isActive
-                      ? 'bg-[#D4AF37] text-black border-[#D4AF37]'
-                      : 'bg-neutral-900 text-neutral-300 border-neutral-800'
-                  }`}
-                >
-                  <span className="flex items-center gap-2">
-                    <Icon className="w-4 h-4" />
-                    <span>{item.label}</span>
-                  </span>
-                  {item.badge && (
-                    <span className={`text-[10px] px-1.5 py-0.5 rounded font-mono ${
-                      isActive ? 'bg-black text-amber-300' : 'bg-neutral-800 text-amber-400'
-                    }`}>
-                      {item.badge}
+          <div className="lg:hidden mt-3 pt-3 border-t border-neutral-800 space-y-2 animate-in fade-in">
+            <div className="grid grid-cols-2 gap-2">
+              {navItems.map((item) => {
+                const Icon = item.icon;
+                const isActive = activeSection === item.id;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => {
+                      setActiveSection(item.id);
+                      setMobileNavOpen(false);
+                    }}
+                    className={`p-3 rounded-xl text-xs font-semibold text-left flex items-center justify-between border cursor-pointer ${
+                      isActive
+                        ? 'bg-[#D4AF37] text-black border-[#D4AF37]'
+                        : 'bg-neutral-900 text-neutral-300 border-neutral-800'
+                    }`}
+                  >
+                    <span className="flex items-center gap-2">
+                      <Icon className="w-4 h-4" />
+                      <span>{item.label}</span>
                     </span>
-                  )}
-                </button>
-              );
-            })}
+                    {item.badge && (
+                      <span className={`text-[10px] px-1.5 py-0.5 rounded font-mono ${
+                        isActive ? 'bg-black text-amber-300' : 'bg-neutral-800 text-amber-400'
+                      }`}>
+                        {item.badge}
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Mobile Lock Admin Button */}
+            <button
+              type="button"
+              onClick={() => {
+                setMobileNavOpen(false);
+                logoutAdmin();
+              }}
+              className="w-full p-2.5 rounded-xl bg-rose-950/50 hover:bg-rose-900/80 text-rose-300 text-xs font-bold border border-rose-800/60 flex items-center justify-center gap-2 cursor-pointer transition-colors active:scale-95"
+            >
+              <LogOut className="w-4 h-4 text-rose-400" />
+              <span>Lock Admin & Sign Out</span>
+            </button>
           </div>
         )}
       </header>
@@ -352,7 +362,7 @@ export const AdminDashboard: React.FC = () => {
               <div>
                 <label className="block text-xs font-medium text-neutral-300 mb-1 flex items-center justify-between">
                   <span>Current Password *</span>
-                  <span className="text-[10px] text-neutral-500 font-mono">Default: OldGym@2026</span>
+                  <span className="text-[10px] text-neutral-500 font-mono">Required</span>
                 </label>
                 <div className="relative">
                   <input

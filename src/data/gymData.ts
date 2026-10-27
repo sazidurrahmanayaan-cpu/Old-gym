@@ -53,7 +53,9 @@ export const GYM_INFO = {
   addressDetailed: 'HF2W+4J8, Munshiganj Sadar, Munshiganj 1500, Bangladesh',
   facebook: 'https://facebook.com/oldgymmunshiganj',
   facebookHandle: 'facebook.com/oldgymmunshiganj',
-  whatsappUrl: 'https://wa.me/8801919048227?text=Hello%20Old%20Gym!%20I%20am%20interested%20in%20joining%20and%20would%20like%20more%20information.',
+  whatsappPhone: '01825-282322',
+  whatsappNumber: '8801825282322',
+  whatsappUrl: 'https://wa.me/8801825282322?text=Hello%20Old%20Gym%20Munshiganj!%20I%20am%20interested%20in%20joining%20and%20would%20like%20more%20information%20about%20packages%2C%20shift%20timings%2C%20and%20fees.',
   callUrl: 'tel:01919048227',
   googleMapsUrl: 'https://www.google.com/maps/search/?api=1&query=HF2W%2B4J8%2C+Munshiganj',
   googleMapsEmbed: 'https://maps.google.com/maps?q=HF2W%2B4J8%2C%20Munshiganj&t=&z=15&ie=UTF8&iwloc=&output=embed',
@@ -306,3 +308,10 @@ export const GALLERY_ITEMS = [
     image: '/assets/images/hero_gym_dark_1790467261162.jpg'
   }
 ];
+
+export const getWhatsAppInquiryUrl = (customMessage?: string): string => {
+  const defaultText =
+    'Hello Old Gym Munshiganj! I am interested in joining and would like more information about membership packages, shift timings, and fees.';
+  return `https://wa.me/8801825282322?text=${encodeURIComponent(customMessage || defaultText)}`;
+};
+
