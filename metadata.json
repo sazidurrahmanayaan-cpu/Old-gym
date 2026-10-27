@@ -1,0 +1,6 @@
+{
+  "name": "Old Gym Health & Fitness Center",
+  "description": "Munshiganj's cleanest and most professional fitness center run by professional bodybuilders. Modern equipment, certified trainers, and personalized workout programs.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
