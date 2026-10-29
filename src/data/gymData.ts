@@ -51,8 +51,8 @@ export const GYM_INFO = {
   formattedPhone: '+880 1919-048227',
   address: 'HF2W+4J8, Munshiganj',
   addressDetailed: 'HF2W+4J8, Munshiganj Sadar, Munshiganj 1500, Bangladesh',
-  facebook: 'https://facebook.com/oldgymmunshiganj',
-  facebookHandle: 'facebook.com/oldgymmunshiganj',
+  facebook: 'https://www.facebook.com/photo/?fbid=131508805643437&set=a.131508785643439&__tn__=%3C',
+  facebookHandle: 'Old Gym Munshiganj Official Facebook',
   whatsappPhone: '01825-282322',
   whatsappNumber: '8801825282322',
   whatsappUrl: 'https://wa.me/8801825282322?text=Hello%20Old%20Gym%20Munshiganj!%20I%20am%20interested%20in%20joining%20and%20would%20like%20more%20information%20about%20packages%2C%20shift%20timings%2C%20and%20fees.',
@@ -270,7 +270,14 @@ export const TRAINERS: Trainer[] = [
   }
 ];
 
-export const GALLERY_ITEMS = [
+export interface GalleryItem {
+  id: string;
+  title: string;
+  category: string;
+  image: string;
+}
+
+export const GALLERY_ITEMS: GalleryItem[] = [
   {
     id: 'gal-1',
     title: 'Heavy Dumbbell & Free Weight Rack',

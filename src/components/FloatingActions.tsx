@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { GYM_INFO } from '../data/gymData';
-import { MessageCircle, Phone, MapPin, Zap, ArrowUp } from 'lucide-react';
+import { useGym } from '../context/GymContext';
+import { MessageCircle, Phone, MapPin, Zap, ArrowUp, QrCode } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 interface FloatingActionsProps {
@@ -8,6 +9,7 @@ interface FloatingActionsProps {
 }
 
 export const FloatingActions: React.FC<FloatingActionsProps> = ({ onOpenTrialModal }) => {
+  const { openShareModal } = useGym();
   const { language } = useLanguage();
   const [showScrollTop, setShowScrollTop] = useState(false);
 
@@ -25,7 +27,7 @@ export const FloatingActions: React.FC<FloatingActionsProps> = ({ onOpenTrialMod
 
   return (
     <>
-      {/* Desktop Floating WhatsApp & Scroll To Top (Right Bottom) */}
+      {/* Desktop Floating WhatsApp, QR / Share & Scroll To Top (Right Bottom) */}
       <div className="fixed bottom-6 right-6 z-50 hidden lg:flex flex-col items-end gap-3 pointer-events-auto">
         {/* Scroll To Top Pill */}
         {showScrollTop && (
@@ -37,6 +39,17 @@ export const FloatingActions: React.FC<FloatingActionsProps> = ({ onOpenTrialMod
             <ArrowUp className="w-5 h-5" />
           </button>
         )}
+
+        {/* Share & QR Code Floating Pill */}
+        <button
+          onClick={openShareModal}
+          className="group flex items-center gap-2 px-3.5 py-2.5 rounded-full bg-neutral-900/95 hover:bg-neutral-800 text-[#FFD700] hover:text-white border border-[#D4AF37]/50 hover:border-[#FFD700] shadow-xl shadow-black/80 transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer backdrop-blur-md"
+          aria-label="Share page & view QR code"
+          title="Share Gym & QR Code"
+        >
+          <QrCode className="w-4 h-4 text-[#FFD700]" />
+          <span className="font-heading text-xs font-bold uppercase tracking-wider text-neutral-200 group-hover:text-[#FFD700]">QR / Share</span>
+        </button>
 
         {/* WhatsApp Floating Contact Pill */}
         <a

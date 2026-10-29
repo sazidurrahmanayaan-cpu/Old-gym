@@ -16,7 +16,9 @@ import {
   Activity,
   Star,
   Camera,
-  MessageCircle
+  MessageCircle,
+  QrCode,
+  Share2
 } from 'lucide-react';
 
 interface NavbarProps {
@@ -24,7 +26,7 @@ interface NavbarProps {
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ onOpenTrialModal }) => {
-  const { gymHours } = useGym();
+  const { gymHours, openShareModal } = useGym();
   const { language, toggleLanguage, setLanguage, t } = useLanguage();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -50,14 +52,14 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenTrialModal }) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Primary navigation links visible in main navbar
+  // Primary navigation links visible in main navbar (Pricing aligned with early position)
   const primaryLinks = [
     { name: t('nav.home', 'Home'), href: '#home' },
     { name: t('nav.about', 'About'), href: '#about' },
     { name: t('nav.equipment', 'Equipment'), href: '#equipment' },
+    { name: t('nav.pricing', 'Pricing'), href: '#pricing' },
     { name: t('nav.classes', 'Classes'), href: '#classes' },
     { name: t('nav.transformations', 'Transformations'), href: '#transformations' },
-    { name: t('nav.pricing', 'Pricing'), href: '#pricing' },
     { name: t('nav.contact', 'Contact'), href: '#contact' },
   ];
 
@@ -176,6 +178,19 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenTrialModal }) => {
               <MessageCircle className="w-3 h-3 text-emerald-400 fill-current" />
               <span>WhatsApp</span>
             </a>
+
+            <span className="text-neutral-700">|</span>
+
+            {/* Share & QR Code Trigger in Top Micro Bar */}
+            <button
+              onClick={openShareModal}
+              className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border border-[#D4AF37]/40 bg-neutral-900 hover:border-[#FFD700] text-[11px] font-semibold text-neutral-300 hover:text-[#FFD700] transition-colors cursor-pointer"
+              title="Share Gym or View QR Code"
+              aria-label="Share page and QR code"
+            >
+              <QrCode className="w-3 h-3 text-[#FFD700]" />
+              <span>Share & QR</span>
+            </button>
 
             <span className="text-neutral-700">|</span>
 
@@ -302,6 +317,17 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenTrialModal }) => {
                 </span>
               </button>
 
+              {/* Share & QR Code Button (Desktop) */}
+              <button
+                onClick={openShareModal}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all border border-neutral-800 bg-neutral-900/80 hover:bg-neutral-800 hover:border-[#D4AF37]/50 text-neutral-300 hover:text-[#FFD700] cursor-pointer shadow-sm active:scale-95"
+                title="Share Gym or View QR Code"
+                aria-label="Share & QR Code"
+              >
+                <QrCode className="w-3.5 h-3.5 text-[#FFD700]" />
+                <span className="hidden xl:inline">QR / Share</span>
+              </button>
+
               {/* Direct Phone Dial (Desktop XL) */}
               <a
                 href={GYM_INFO.callUrl}
@@ -325,6 +351,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenTrialModal }) => {
 
             {/* Mobile Actions Header (Compact & Thumb Friendly) */}
             <div className="flex lg:hidden items-center gap-1.5">
+              {/* Mobile QR & Share Trigger Button */}
+              <button
+                onClick={openShareModal}
+                className="p-2 text-neutral-300 hover:text-[#FFD700] rounded-lg bg-neutral-900 border border-neutral-800 min-h-[40px] min-w-[40px] flex items-center justify-center active:scale-95 cursor-pointer"
+                aria-label="Share Gym & QR Code"
+                title="Share & QR Code"
+              >
+                <QrCode className="w-4 h-4 text-[#FFD700]" />
+              </button>
+
               {/* Mobile Language Switcher */}
               <button
                 onClick={toggleLanguage}
@@ -429,6 +465,18 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenTrialModal }) => {
                 <MessageCircle className="w-4 h-4 fill-current" />
                 <span>{language === 'bn' ? 'হোয়াটসঅ্যাপে চ্যাট করুন' : 'Chat on WhatsApp'}</span>
               </a>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  openShareModal();
+                }}
+                className="w-full py-3 rounded-xl text-xs font-bold uppercase tracking-wider text-[#FFD700] hover:text-white bg-neutral-900 hover:bg-neutral-800 border border-[#D4AF37]/50 text-center shadow-md active:scale-95 flex items-center justify-center gap-2 cursor-pointer transition-colors"
+              >
+                <QrCode className="w-4 h-4 text-[#FFD700]" />
+                <span>{language === 'bn' ? 'শেয়ার ও কিউআর কোড' : 'Share Gym & QR Code'}</span>
+              </button>
             </div>
 
           </div>

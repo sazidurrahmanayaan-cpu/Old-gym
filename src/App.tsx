@@ -14,9 +14,11 @@ import { TrainerSection } from './components/TrainerSection';
 import { ReviewsSection } from './components/ReviewsSection';
 import { GallerySection } from './components/GallerySection';
 import { ContactSection } from './components/ContactSection';
+import { ShareQrSection } from './components/ShareQrSection';
 import { Footer } from './components/Footer';
 import { FloatingActions } from './components/FloatingActions';
 import { TrialModal } from './components/TrialModal';
+import { ShareModal } from './components/ShareModal';
 import { AdminDashboard } from './components/admin/AdminDashboard';
 import { AdminLoginModal } from './components/admin/AdminLoginModal';
 
@@ -73,29 +75,29 @@ function AppContent() {
         {/* 3. Gym Equipment Showcase Carousel & Lightbox Specs */}
         <EquipmentShowcase />
 
-        {/* 4. Classes Section with 3D Tilt Cards */}
+        {/* 4. Membership & Transparent Pricing Table (Moved High for Instant Visibility) */}
+        <PricingSection
+          onSelectPlan={(planName) => handleOpenTrialModal(`Plan: ${planName}`)}
+        />
+
+        {/* 5. Classes Section with 3D Tilt Cards */}
         <ClassesSection
           onSelectClassForTrial={(className) => handleOpenTrialModal(`Class: ${className}`)}
         />
 
-        {/* 5. Before & After Body Transformation Slider */}
+        {/* 6. Before & After Body Transformation Slider */}
         <TransformationSection
           onStartTransformation={(plan) => handleOpenTrialModal(plan || '90-Day Transformation')}
         />
 
-        {/* 6. Interactive Workout & Bengali Diet Plan Preview */}
+        {/* 7. Interactive Workout & Bengali Diet Plan Preview */}
         <PlanPreview
           onUnlockPlan={(plan) => handleOpenTrialModal(plan)}
         />
 
-        {/* 7. BMI Calculator (Interactive) */}
+        {/* 8. BMI Calculator (Interactive) */}
         <BmiCalculator
           onSelectRecommendedPlan={(planSuggestion) => handleOpenTrialModal(`Prescribed: ${planSuggestion}`)}
-        />
-
-        {/* 8. Pricing Table with Glassmorphism */}
-        <PricingSection
-          onSelectPlan={(planName) => handleOpenTrialModal(`Plan: ${planName}`)}
         />
 
         {/* 9. Trainer Section with 3D Card Flip */}
@@ -111,6 +113,9 @@ function AppContent() {
 
         {/* 12. Contact Section with Map Embed */}
         <ContactSection />
+
+        {/* 13. Share via QR Code Section (Right Above the Footer) */}
+        <ShareQrSection />
       </main>
 
       {/* Footer */}
@@ -127,6 +132,9 @@ function AppContent() {
         onClose={handleCloseTrialModal}
         defaultPlan={selectedPlanForTrial}
       />
+
+      {/* Share & QR Code Modal */}
+      <ShareModal />
 
       {/* Admin Passcode Authentication Modal */}
       <AdminLoginModal />

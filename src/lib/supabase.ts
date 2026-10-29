@@ -23,6 +23,7 @@ export interface EquipmentRecord {
   quantity: number;
   condition: 'Excellent' | 'Good' | 'Needs Service' | 'Maintenance Required';
   last_serviced: string;
+  image?: string;
   created_at?: string;
 }
 

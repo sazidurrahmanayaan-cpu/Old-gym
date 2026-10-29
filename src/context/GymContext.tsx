@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { GYM_INFO, TRAINERS, PRICING_PLANS, Trainer, PricingPlan } from '../data/gymData';
+import { GYM_INFO, TRAINERS, PRICING_PLANS, Trainer, PricingPlan, GALLERY_ITEMS, GalleryItem } from '../data/gymData';
 import { 
   insertLeadToSupabase, 
   fetchMembersFromSupabase, 
@@ -98,6 +98,9 @@ interface GymContextType {
   logoutAdmin: () => void;
   showLoginModal: boolean;
   setShowLoginModal: (show: boolean) => void;
+  showShareModal: boolean;
+  setShowShareModal: (show: boolean) => void;
+  openShareModal: () => void;
   currentView: 'public' | 'admin';
   setCurrentView: (view: 'public' | 'admin') => void;
   changeAdminPassword: (currentPass: string, newPass: string) => { success: boolean; message: string };
@@ -147,6 +150,12 @@ interface GymContextType {
 
   gymHours: GymHours;
   updateGymHours: (newHours: GymHours) => void;
+
+  // Gallery
+  galleryItems: GalleryItem[];
+  setGalleryItems: React.Dispatch<React.SetStateAction<GalleryItem[]>>;
+  addGalleryItem: (item: Omit<GalleryItem, 'id'>) => void;
+  deleteGalleryItem: (id: string) => void;
 
   // Transactions
   transactions: GymTransaction[];
@@ -364,6 +373,8 @@ export const GymProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return false;
   });
   const [showLoginModal, setShowLoginModal] = useState<boolean>(false);
+  const [showShareModal, setShowShareModal] = useState<boolean>(false);
+  const openShareModal = () => setShowShareModal(true);
   const [currentView, setCurrentView] = useState<'public' | 'admin'>(() => {
     if (typeof window !== 'undefined') {
       const path = window.location.pathname.toLowerCase();
@@ -460,6 +471,36 @@ export const GymProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const saved = localStorage.getItem('oldgym_transactions');
     return saved ? JSON.parse(saved) : INITIAL_TRANSACTIONS;
   });
+
+  // Gallery State & Methods
+  const [galleryItems, setGalleryItems] = useState<GalleryItem[]>(() => {
+    try {
+      const saved = localStorage.getItem('oldgym_gallery');
+      return saved ? JSON.parse(saved) : GALLERY_ITEMS;
+    } catch {
+      return GALLERY_ITEMS;
+    }
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('oldgym_gallery', JSON.stringify(galleryItems));
+    } catch (e) {
+      console.warn('Failed to persist gallery to localStorage:', e);
+    }
+  }, [galleryItems]);
+
+  const addGalleryItem = (itemData: Omit<GalleryItem, 'id'>) => {
+    const newItem: GalleryItem = {
+      ...itemData,
+      id: `gal-${Date.now()}`
+    };
+    setGalleryItems(prev => [newItem, ...prev]);
+  };
+
+  const deleteGalleryItem = (id: string) => {
+    setGalleryItems(prev => prev.filter(g => g.id !== id));
+  };
 
   // Persistence Effects
   useEffect(() => {
@@ -869,6 +910,9 @@ export const GymProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         logoutAdmin,
         showLoginModal,
         setShowLoginModal,
+        showShareModal,
+        setShowShareModal,
+        openShareModal,
         currentView,
         setCurrentView: handleSetCurrentView,
         changeAdminPassword,
@@ -906,6 +950,10 @@ export const GymProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         updatePlanPrice,
         gymHours,
         updateGymHours,
+        galleryItems,
+        setGalleryItems,
+        addGalleryItem,
+        deleteGalleryItem,
         transactions,
         setTransactions,
         refreshAllFromSupabase

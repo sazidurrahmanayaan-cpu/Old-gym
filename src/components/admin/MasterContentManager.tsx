@@ -20,8 +20,11 @@ import {
   AlertTriangle,
   Phone,
   Cloud,
-  Layers
+  Layers,
+  Camera,
+  Image as ImageIcon
 } from 'lucide-react';
+import { ImageUploadField } from './ImageUploadField';
 
 export const MasterContentManager: React.FC = () => {
   const { 
@@ -40,11 +43,14 @@ export const MasterContentManager: React.FC = () => {
     equipment,
     addEquipment,
     updateEquipment,
-    deleteEquipment
+    deleteEquipment,
+    galleryItems,
+    addGalleryItem,
+    deleteGalleryItem
   } = useGym();
 
   // Active Sub-Tab
-  const [activeTab, setActiveTab] = useState<'coaches' | 'equipment' | 'timing' | 'pricing'>('coaches');
+  const [activeTab, setActiveTab] = useState<'coaches' | 'equipment' | 'gallery' | 'timing' | 'pricing'>('coaches');
 
   // Timing state
   const [editableHours, setEditableHours] = useState(gymHours);
@@ -86,6 +92,36 @@ export const MasterContentManager: React.FC = () => {
   const [eqQuantity, setEqQuantity] = useState(1);
   const [eqCondition, setEqCondition] = useState<EquipmentRecord['condition']>('Excellent');
   const [eqLastServiced, setEqLastServiced] = useState(new Date().toISOString().split('T')[0]);
+  const [eqImage, setEqImage] = useState('');
+
+  // Gallery Modal / Form states
+  const [isGalleryModalOpen, setIsGalleryModalOpen] = useState(false);
+  const [galleryTitle, setGalleryTitle] = useState('');
+  const [galleryCategory, setGalleryCategory] = useState('Strength Zone');
+  const [galleryImage, setGalleryImage] = useState('');
+  const [galleryNotification, setGalleryNotification] = useState(false);
+
+  const handleOpenAddGallery = () => {
+    setGalleryTitle('');
+    setGalleryCategory('Strength Zone');
+    setGalleryImage('');
+    setIsGalleryModalOpen(true);
+  };
+
+  const handleSaveGallery = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!galleryTitle.trim() || !galleryImage) return;
+
+    addGalleryItem({
+      title: galleryTitle.trim(),
+      category: galleryCategory,
+      image: galleryImage,
+    });
+
+    setIsGalleryModalOpen(false);
+    setGalleryNotification(true);
+    setTimeout(() => setGalleryNotification(false), 3000);
+  };
 
   // Handle Gym Hours Save
   const handleSaveHours = (e: React.FormEvent) => {
@@ -197,6 +233,7 @@ export const MasterContentManager: React.FC = () => {
     setEqQuantity(1);
     setEqCondition('Excellent');
     setEqLastServiced(new Date().toISOString().split('T')[0]);
+    setEqImage('');
     setIsEquipmentModalOpen(true);
   };
 
@@ -208,6 +245,7 @@ export const MasterContentManager: React.FC = () => {
     setEqQuantity(item.quantity);
     setEqCondition(item.condition);
     setEqLastServiced(item.last_serviced);
+    setEqImage(item.image || '');
     setIsEquipmentModalOpen(true);
   };
 
@@ -223,6 +261,7 @@ export const MasterContentManager: React.FC = () => {
         quantity: Number(eqQuantity) || 1,
         condition: eqCondition,
         last_serviced: eqLastServiced,
+        image: eqImage || undefined,
       });
     } else {
       await addEquipment({
@@ -231,6 +270,7 @@ export const MasterContentManager: React.FC = () => {
         quantity: Number(eqQuantity) || 1,
         condition: eqCondition,
         last_serviced: eqLastServiced,
+        image: eqImage || undefined,
       });
     }
 
@@ -272,6 +312,18 @@ export const MasterContentManager: React.FC = () => {
         >
           <Dumbbell className="w-4 h-4" />
           <span>Equipment & Machines ({equipment.length})</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('gallery')}
+          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
+            activeTab === 'gallery'
+              ? 'bg-[#D4AF37] text-black shadow-md'
+              : 'text-neutral-400 hover:text-white'
+          }`}
+        >
+          <Camera className="w-4 h-4" />
+          <span>Gallery Photos ({galleryItems.length})</span>
         </button>
 
         <button
@@ -491,9 +543,15 @@ export const MasterContentManager: React.FC = () => {
                       <tr key={item.id} className="hover:bg-neutral-900/40 transition-colors">
                         <td className="p-4">
                           <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-lg bg-neutral-900 border border-neutral-800 flex items-center justify-center text-[#D4AF37]">
-                              <Dumbbell className="w-4 h-4" />
-                            </div>
+                            {item.image ? (
+                              <div className="w-10 h-10 rounded-lg overflow-hidden border border-neutral-800 bg-neutral-900 shrink-0">
+                                <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                              </div>
+                            ) : (
+                              <div className="w-10 h-10 rounded-lg bg-neutral-900 border border-neutral-800 flex items-center justify-center text-[#D4AF37] shrink-0">
+                                <Dumbbell className="w-4 h-4" />
+                              </div>
+                            )}
                             <div>
                               <span className="font-bold text-white block">{item.name}</span>
                               <span className="text-[10px] text-neutral-500 font-mono">{item.id.slice(0, 8)}...</span>
@@ -556,6 +614,85 @@ export const MasterContentManager: React.FC = () => {
                 </tbody>
               </table>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* SUB-SECTION: GALLERY MEDIA */}
+      {activeTab === 'gallery' && (
+        <div className="space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#121212] p-6 rounded-3xl border border-neutral-800 shadow-xl">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-xs font-mono uppercase tracking-widest text-[#FFD700]">Visual Showcase</span>
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono bg-amber-500/10 text-amber-400 border border-amber-500/30">
+                  <Camera className="w-3 h-3" />
+                  <span>Landing Page Gallery</span>
+                </span>
+              </div>
+              <h3 className="font-heading text-2xl font-bold uppercase text-white">Gym Gallery & Atmosphere</h3>
+              <p className="text-xs text-neutral-400 mt-0.5">
+                Upload real photos of gym floor, heavy dumbbells, barbell racks, and training zones. Live sync to website.
+              </p>
+            </div>
+
+            <button
+              onClick={handleOpenAddGallery}
+              className="px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider text-black bg-gold-gradient hover:bg-gold-gradient-hover transition-all flex items-center gap-2 cursor-pointer shadow-md self-start sm:self-auto active:scale-95"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Upload New Photo</span>
+            </button>
+          </div>
+
+          {galleryNotification && (
+            <div className="p-3 rounded-xl bg-emerald-950/70 border border-emerald-800 text-emerald-300 text-xs flex items-center gap-2 animate-in fade-in">
+              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+              <span>New photo added and published to the website gallery!</span>
+            </div>
+          )}
+
+          {/* Gallery Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {galleryItems.map((item) => (
+              <div key={item.id} className="group relative rounded-2xl overflow-hidden border border-neutral-800 bg-[#141414] shadow-lg flex flex-col">
+                <div className="relative aspect-video w-full overflow-hidden bg-neutral-900">
+                  <img
+                    src={item.image}
+                    alt={item.title}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                  <div className="absolute top-2 right-2">
+                    <span className="px-2.5 py-1 rounded-full text-[10px] font-bold font-mono uppercase bg-black/80 backdrop-blur-md text-[#FFD700] border border-[#FFD700]/30">
+                      {item.category}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="p-4 flex items-center justify-between gap-3 flex-1 bg-[#121212]">
+                  <div>
+                    <h4 className="font-bold text-white text-sm line-clamp-1">{item.title}</h4>
+                    <p className="text-[11px] text-neutral-400 font-mono mt-0.5">{item.category}</p>
+                  </div>
+
+                  <button
+                    onClick={() => {
+                      if (galleryItems.length <= 1) {
+                        alert('At least one photo must remain in the gallery.');
+                        return;
+                      }
+                      if (window.confirm(`Delete photo "${item.title}" from the gallery?`)) {
+                        deleteGalleryItem(item.id);
+                      }
+                    }}
+                    className="p-2 rounded-xl bg-neutral-900 hover:bg-rose-950/70 text-neutral-400 hover:text-rose-400 border border-neutral-800 transition-colors cursor-pointer shrink-0"
+                    title="Delete photo"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       )}
@@ -918,29 +1055,27 @@ export const MasterContentManager: React.FC = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-medium text-neutral-300 mb-1">Experience</label>
-                  <input
-                    type="text"
-                    required
-                    value={coachExp}
-                    onChange={(e) => setCoachExp(e.target.value)}
-                    placeholder="e.g. 8+ Years Coaching"
-                    className="w-full px-3 py-2.5 rounded-xl bg-neutral-900 border border-neutral-800 text-white text-xs focus:border-[#D4AF37] focus:outline-none"
-                  />
-                </div>
+              <div>
+                <label className="block text-xs font-medium text-neutral-300 mb-1">Experience</label>
+                <input
+                  type="text"
+                  required
+                  value={coachExp}
+                  onChange={(e) => setCoachExp(e.target.value)}
+                  placeholder="e.g. 8+ Years Coaching"
+                  className="w-full px-3 py-2.5 rounded-xl bg-neutral-900 border border-neutral-800 text-white text-xs focus:border-[#D4AF37] focus:outline-none"
+                />
+              </div>
 
-                <div>
-                  <label className="block text-xs font-medium text-neutral-300 mb-1">Image URL / Path</label>
-                  <input
-                    type="text"
-                    required
-                    value={coachImage}
-                    onChange={(e) => setCoachImage(e.target.value)}
-                    className="w-full px-3 py-2.5 rounded-xl bg-neutral-900 border border-neutral-800 text-white text-xs font-mono focus:border-[#D4AF37] focus:outline-none"
-                  />
-                </div>
+              {/* Coach Headshot Upload */}
+              <div>
+                <ImageUploadField
+                  label="Coach Photo / Headshot"
+                  value={coachImage}
+                  onChange={setCoachImage}
+                  helperText="Upload coach photo directly from your device (auto-optimized) or paste external URL."
+                  required
+                />
               </div>
 
               <div>
@@ -979,7 +1114,7 @@ export const MasterContentManager: React.FC = () => {
       {/* Add / Edit Equipment Modal */}
       {isEquipmentModalOpen && (
         <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="relative max-w-lg w-full bg-[#141414] border border-[#D4AF37]/50 rounded-3xl p-6 sm:p-8 shadow-2xl">
+          <div className="relative max-w-lg w-full bg-[#141414] border border-[#D4AF37]/50 rounded-3xl p-6 sm:p-8 shadow-2xl max-h-[90vh] overflow-y-auto">
             <button
               onClick={() => setIsEquipmentModalOpen(false)}
               className="absolute top-5 right-5 p-2 rounded-xl bg-neutral-900 text-neutral-400 hover:text-white border border-neutral-800 cursor-pointer"
@@ -1066,11 +1201,86 @@ export const MasterContentManager: React.FC = () => {
                 </div>
               </div>
 
+              {/* Equipment Photo Upload */}
+              <div>
+                <ImageUploadField
+                  label="Equipment Photo (Optional)"
+                  value={eqImage}
+                  onChange={setEqImage}
+                  helperText="Upload machine or barbell photo from device (auto-optimized) or paste external URL."
+                />
+              </div>
+
               <button
                 type="submit"
                 className="w-full py-3.5 px-6 rounded-xl text-xs font-bold uppercase tracking-wider text-black bg-gold-gradient hover:bg-gold-gradient-hover transition-all cursor-pointer shadow-md active:scale-95"
               >
                 {editingEquipment ? 'Update Equipment Item' : 'Add Equipment to Supabase'}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Add Gallery Photo Modal */}
+      {isGalleryModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="relative max-w-lg w-full bg-[#141414] border border-[#D4AF37]/50 rounded-3xl p-6 sm:p-8 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <button
+              onClick={() => setIsGalleryModalOpen(false)}
+              className="absolute top-5 right-5 p-2 rounded-xl bg-neutral-900 text-neutral-400 hover:text-white border border-neutral-800 cursor-pointer"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="mb-6 space-y-1">
+              <span className="text-xs font-mono uppercase tracking-widest text-[#FFD700]">Visual Media Upload</span>
+              <h3 className="font-heading text-2xl font-bold uppercase text-white">Upload Gallery Photo</h3>
+              <p className="text-xs text-neutral-400">Add training floor or equipment imagery to the website gallery.</p>
+            </div>
+
+            <form onSubmit={handleSaveGallery} className="space-y-4">
+              <div>
+                <label className="block text-xs font-medium text-neutral-300 mb-1">Photo Title / Caption *</label>
+                <input
+                  type="text"
+                  required
+                  value={galleryTitle}
+                  onChange={(e) => setGalleryTitle(e.target.value)}
+                  placeholder="e.g. Heavy Dumbbell Rack & Free Weights Zone"
+                  className="w-full px-3 py-2.5 rounded-xl bg-neutral-900 border border-neutral-800 text-white text-xs focus:border-[#D4AF37] focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-neutral-300 mb-1">Category / Tag</label>
+                <select
+                  value={galleryCategory}
+                  onChange={(e) => setGalleryCategory(e.target.value)}
+                  className="w-full px-3 py-2.5 rounded-xl bg-neutral-900 border border-neutral-800 text-white text-xs focus:border-[#D4AF37] focus:outline-none"
+                >
+                  <option value="Strength Zone">Strength Zone</option>
+                  <option value="Heavy Iron">Heavy Iron</option>
+                  <option value="Cardio Deck">Cardio Deck</option>
+                  <option value="Athletes & Mentors">Athletes & Mentors</option>
+                  <option value="Locker & Facility">Locker & Facility</option>
+                </select>
+              </div>
+
+              <ImageUploadField
+                label="Gallery Photo File *"
+                value={galleryImage}
+                onChange={setGalleryImage}
+                helperText="Upload image from device. File is automatically optimized to crisp web resolution."
+                required
+              />
+
+              <button
+                type="submit"
+                disabled={!galleryImage}
+                className="w-full py-3.5 px-6 rounded-xl text-xs font-bold uppercase tracking-wider text-black bg-gold-gradient hover:bg-gold-gradient-hover disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer shadow-md active:scale-95"
+              >
+                Publish to Website Gallery
               </button>
             </form>
           </div>

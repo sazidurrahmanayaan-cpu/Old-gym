@@ -2,10 +2,10 @@ import React from 'react';
 import { GymLogo } from './GymLogo';
 import { GYM_INFO } from '../data/gymData';
 import { useGym } from '../context/GymContext';
-import { Phone, MapPin, Facebook, MessageCircle, ArrowUp, Shield } from 'lucide-react';
+import { Phone, MapPin, Facebook, MessageCircle, ArrowUp, Shield, QrCode } from 'lucide-react';
 
 export const Footer: React.FC = () => {
-  const { gymHours, isAdmin, setShowLoginModal, setCurrentView } = useGym();
+  const { gymHours, isAdmin, setShowLoginModal, setCurrentView, openShareModal } = useGym();
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -61,6 +61,15 @@ export const Footer: React.FC = () => {
               >
                 <Phone className="w-4 h-4" />
               </a>
+              <button
+                type="button"
+                onClick={openShareModal}
+                className="w-9 h-9 rounded-xl bg-neutral-900 hover:bg-[#D4AF37] hover:text-black text-neutral-300 flex items-center justify-center transition-colors border border-neutral-800 cursor-pointer"
+                aria-label="Share Page & QR Code"
+                title="Share Page & QR Code"
+              >
+                <QrCode className="w-4 h-4 text-[#FFD700]" />
+              </button>
             </div>
           </div>
 
@@ -77,6 +86,9 @@ export const Footer: React.FC = () => {
                 <a href="#about" className="hover:text-[#FFD700] transition-colors">About Facility</a>
               </li>
               <li>
+                <a href="#pricing" className="hover:text-[#FFD700] transition-colors">Membership Fees</a>
+              </li>
+              <li>
                 <a href="#classes" className="hover:text-[#FFD700] transition-colors">Training Programs</a>
               </li>
               <li>
@@ -86,10 +98,17 @@ export const Footer: React.FC = () => {
                 <a href="#trainers" className="hover:text-[#FFD700] transition-colors">Pro Coaches</a>
               </li>
               <li>
-                <a href="#pricing" className="hover:text-[#FFD700] transition-colors">Membership Fees</a>
+                <a href="#reviews" className="hover:text-[#FFD700] transition-colors">Google Reviews</a>
               </li>
               <li>
-                <a href="#reviews" className="hover:text-[#FFD700] transition-colors">Google Reviews</a>
+                <button
+                  type="button"
+                  onClick={openShareModal}
+                  className="text-neutral-400 hover:text-[#FFD700] flex items-center gap-1.5 transition-colors cursor-pointer"
+                >
+                  <QrCode className="w-3.5 h-3.5 text-[#D4AF37]" />
+                  <span>Share & QR Code</span>
+                </button>
               </li>
               <li className="pt-1">
                 <button

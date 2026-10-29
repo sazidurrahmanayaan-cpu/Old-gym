@@ -1,16 +1,20 @@
 import React, { useState } from 'react';
 import { GALLERY_ITEMS } from '../data/gymData';
+import { useGym } from '../context/GymContext';
 import { Camera, Maximize2, X } from 'lucide-react';
 
 export const GallerySection: React.FC = () => {
+  const { galleryItems } = useGym();
   const [activeCategory, setActiveCategory] = useState<string>('All');
   const [lightboxImage, setLightboxImage] = useState<{ title: string; image: string; category: string } | null>(null);
 
   const categories = ['All', 'Strength Zone', 'Free Weights', 'New Equipment', 'Clean Space', 'Coaching'];
 
+  const items = galleryItems && galleryItems.length > 0 ? galleryItems : GALLERY_ITEMS;
+
   const filteredItems = activeCategory === 'All'
-    ? GALLERY_ITEMS
-    : GALLERY_ITEMS.filter(item => item.category === activeCategory);
+    ? items
+    : items.filter(item => item.category === activeCategory);
 
   return (
     <section id="gallery" className="py-20 lg:py-28 bg-[#0d0d0d] relative border-t border-neutral-900">
